@@ -61,9 +61,19 @@ else:
     install_requires.append('evernote>=1.25')
 
 
+version = None
+with open("./geeknote/__init__.py") as f:
+    for line in f.readlines():
+        if "__version__" in line:
+            version = line.split("'")[1].split("'")[0]
+if version is None:
+    print("Could not get version")
+    sys.exit(1)
+
+
 setup(
     name='geeknote',
-    version='0.2a0',
+    version=version,
     license='GPL',
     author='Vitaliy Rodnenko',
     author_email='vitaliy@rodnenko.ru',
