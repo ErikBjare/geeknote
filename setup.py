@@ -32,7 +32,7 @@ class full_install(install):
     def run(self):
         if sys.platform.startswith('linux'):
             self.install_autocomplete()
-        install.run(self)
+        install.do_egg_install()
 
     def install_autocomplete(self):
         def copy_autocomplete(src,dst):
@@ -102,9 +102,6 @@ setup(
             'geeknote = geeknote.geeknote:main',
             'gnsync = geeknote.gnsync:main'
         ]
-    },
-    cmdclass={
-        'install': full_install,
     },
     platforms='Any',
     zip_safe=True,
