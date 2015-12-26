@@ -1,3 +1,10 @@
+BEWARE!
+===============
+
+*This is my playground for porting geeknote to Python 3, here be dragons.*
+
+
+
 geeknote for evernote (or 印象笔记)  [![Build Status](https://travis-ci.org/ErikBjare/geeknote.svg?branch=master)](https://travis-ci.org/ErikBjare/geeknote)
 ==================================
 
