@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 import logging
-import config
+from . import config
 
 db_path = os.path.join(config.APP_DIR, 'database.db')
 engine = create_engine('sqlite:///' + db_path)
@@ -129,7 +129,7 @@ class Storage(object):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except Exception, e:
+            except Exception as e:
                 logging.error("%s : %s", func.__name__, str(e))
                 return False
         return wrapper
@@ -255,7 +255,7 @@ class Storage(object):
         if not isinstance(settings, dict):
             raise Exception("Wrong settings")
 
-        for key in settings.keys():
+        for key in list(settings.keys()):
             if not settings[key]:
                 raise Exception("Wrong setting's item")
 
@@ -327,7 +327,7 @@ class Storage(object):
         for item in self.session.query(Tag).all():
             self.session.delete(item)
 
-        for key in tags.keys():
+        for key in list(tags.keys()):
             if not tags[key]:
                 raise Exception("Wrong tag's item")
 
@@ -365,7 +365,7 @@ class Storage(object):
         for item in self.session.query(Notebook).all():
             self.session.delete(item)
 
-        for key in notebooks.keys():
+        for key in list(notebooks.keys()):
             if not notebooks[key]:
                 raise Exception("Wrong notebook's item")
 

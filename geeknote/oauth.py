@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import httplib
+import http.client
 import time
-import Cookie
+import http.cookies
 import uuid
 import re
-from urllib import urlencode, unquote
-from urlparse import urlparse
+from urllib.parse import urlencode, unquote
+from urllib.parse import urlparse
 
-import out
-import tools
-import config
-from log import logging
+from . import out
+from . import tools
+from . import config
+from .log import logging
 
 
 class GeekNoteAuth(object):
@@ -68,7 +68,7 @@ class GeekNoteAuth(object):
         }
 
         if kwargs:
-            params = dict(params.items() + kwargs.items())
+            params = dict(list(params.items()) + list(kwargs.items()))
 
         return params
 
@@ -91,7 +91,7 @@ class GeekNoteAuth(object):
 
         # insert local cookies in request
         headers = {
-            "Cookie": '; '.join([key + '=' + self.cookies[key] for key in self.cookies.keys()])
+            "Cookie": '; '.join([key + '=' + self.cookies[key] for key in list(self.cookies.keys())])
         }
 
         if method == "POST":
@@ -100,7 +100,7 @@ class GeekNoteAuth(object):
         logging.debug("Request URL: %s:/%s > %s # %s", url,
                       uri, unquote(params), headers["Cookie"])
 
-        conn = httplib.HTTPSConnection(url)
+        conn = http.client.HTTPSConnection(url)
         conn.request(method, uri, params, headers)
         response = conn.getresponse()
         data = response.read()
@@ -114,11 +114,11 @@ class GeekNoteAuth(object):
                               data=data)
 
         # update local cookies
-        sk = Cookie.SimpleCookie(response.getheader("Set-Cookie", ""))
+        sk = http.cookies.SimpleCookie(response.getheader("Set-Cookie", ""))
         for key in sk:
             self.cookies[key] = sk[key].value
         # delete cookies whose content is "deleteme"
-        for key in self.cookies.keys():
+        for key in list(self.cookies.keys()):
             if self.cookies[key] == "deleteme":
                 del self.cookies[key]
 

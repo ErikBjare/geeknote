@@ -74,7 +74,7 @@ DEF_DATE_RANGE_DELIMITER = "/"
 try:
     if not os.path.exists(APP_DIR):
         os.mkdir(APP_DIR)
-except Exception, e:
+except Exception as e:
     sys.stdout.write("Cannot create application directory : %s" % APP_DIR)
     exit(1)
 

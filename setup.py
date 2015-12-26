@@ -39,9 +39,9 @@ class full_install(install):
         def copy_autocomplete(src,dst):
             if os.path.exists(dst):
                 shutil.copy(src,dst)
-                print('copying %s -> %s' % (src,dst))
+                print(('copying %s -> %s' % (src,dst)))
 
-        print "installing autocomplete"
+        print("installing autocomplete")
         copy_autocomplete('completion/bash_completion/_geeknote',self.bash_completion_dir)
         copy_autocomplete('completion/zsh_completion/_geeknote',self.zsh_completion_dir)
 

@@ -17,15 +17,15 @@ import evernote.edam.notestore.NoteStore as NoteStore
 from evernote.edam.notestore.ttypes import NotesMetadataResultSpec
 import evernote.edam.type.ttypes as Types
 
-import config
-import tools
-import out
-from editor import Editor, EditorThread
-from gclient import GUserStore as UserStore
-from argparser import argparser
-from oauth import GeekNoteAuth
-from storage import Storage
-from log import logging
+from . import config
+from . import tools
+from . import out
+from .editor import Editor, EditorThread
+from .gclient import GUserStore as UserStore
+from .argparser import argparser
+from .oauth import GeekNoteAuth
+from .storage import Storage
+from .log import logging
 
 
 def GeekNoneDBConnectOnly(func):
@@ -98,7 +98,7 @@ class GeekNote(object):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except Exception, e:
+            except Exception as e:
                 logging.error("Error: %s : %s", func.__name__, str(e))
 
                 if not hasattr(e, 'errorCode'):
@@ -122,12 +122,12 @@ class GeekNote(object):
                 # Patched because otherwise if you get rate limited you still keep
                 # hammering the server on scripts
                 elif errorCode == 19:
-                    print("\nRate Limit Hit: Please wait %s seconds before continuing" %
-                          str(e.rateLimitDuration))
+                    print(("\nRate Limit Hit: Please wait %s seconds before continuing" %
+                          str(e.rateLimitDuration)))
                     tools.exitErr()
 
                 else:
-                    print e
+                    print(e)
                     return False
 
                 tools.exitErr()
@@ -273,7 +273,7 @@ class GeekNote(object):
 
         if resources:
             """ make EverNote API resources """
-            note.resources = map(make_resource, resources)
+            note.resources = list(map(make_resource, resources))
 
             """ add to content """
             resource_nodes = ""
@@ -330,7 +330,7 @@ class GeekNote(object):
 
         if resources:
             """ make EverNote API resources """
-            note.resources = map(make_resource, resources)
+            note.resources = list(map(make_resource, resources))
 
             """ add to content """
             resource_nodes = ""
@@ -762,7 +762,7 @@ class Notes(GeekNoteConnector):
                 ext = os.path.splitext(editor.tempfile)[1]
                 mapping = {'markdown': config.MARKDOWN_EXTENSIONS,
                            'html': config.HTML_EXTENSIONS}
-                fmt = filter(lambda k: ext in mapping[k], mapping)
+                fmt = [k for k in mapping if ext in mapping[k]]
                 if fmt:
                     fmt = fmt[0]
 
@@ -1052,7 +1052,7 @@ class Notes(GeekNoteConnector):
                 notes_dict[noteId] = [note]
                 out.printLine("new note \"" + note.title + "\" with guid " + note.guid)
 
-        all_dups = [dups for id, dups in notes_dict.iteritems() if len(dups) > 1]  # list of lists
+        all_dups = [dups for id, dups in notes_dict.items() if len(dups) > 1]  # list of lists
         total_dups = sum(map(len, all_dups))  # count total
         removed_total = 0
 
@@ -1219,11 +1219,11 @@ def main(args=None):
         if COMMAND == 'tag-remove':
             Tags().remove(**ARGS)
 
-    except (KeyboardInterrupt, SystemExit, tools.ExitException), e:
+    except (KeyboardInterrupt, SystemExit, tools.ExitException) as e:
         if e.message:
             exit_status_code = e.message
 
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         logging.error("App error: %s", str(e))
 

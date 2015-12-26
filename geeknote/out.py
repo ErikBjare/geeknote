@@ -2,13 +2,13 @@
 
 import getpass
 import threading
-import thread
+import _thread
 import time
 import datetime
 import sys
 
-import tools
-import config
+from . import tools
+from . import config
 
 
 def preloaderPause(fn, *args, **kwargs):
@@ -59,7 +59,7 @@ class preloader(object):
             return
         preloader.counter = 0
         preloader.isLaunch = True
-        thread.start_new_thread(preloader.draw, ())
+        _thread.start_new_thread(preloader.draw, ())
 
     @staticmethod
     def stop():
@@ -76,7 +76,7 @@ class preloader(object):
         if threading.current_thread().__class__.__name__ == '_MainThread':
             sys.exit(code)
         else:
-            thread.exit()
+            _thread.exit()
 
     @staticmethod
     def draw():
@@ -105,7 +105,7 @@ def GetUserCredentials():
 
         if password is None:
             password = rawInput("Password: ", True)
-    except (KeyboardInterrupt, SystemExit), e:
+    except (KeyboardInterrupt, SystemExit) as e:
         if e.message:
             tools.exit(e.message)
         else:
@@ -121,7 +121,7 @@ def GetUserAuthCode():
         code = None
         if code is None:
             code = rawInput("Two-Factor Authentication Code: ")
-    except (KeyboardInterrupt, SystemExit), e:
+    except (KeyboardInterrupt, SystemExit) as e:
         if e.message:
             tools.exit(e.message)
         else:
@@ -155,7 +155,7 @@ def confirm(message):
                 return False
             failureMessage('Incorrect answer "%s", '
                            'please try again:\n' % answer)
-    except (KeyboardInterrupt, SystemExit), e:
+    except (KeyboardInterrupt, SystemExit) as e:
         if e.message:
             tools.exit(e.message)
         else:
@@ -171,7 +171,7 @@ def showNote(note):
               (printDate(note.created).ljust(15, " ")))
     printLine("Updated: %s" %
               (printDate(note.updated).ljust(15, " ")))
-    for key, value in note.attributes.__dict__.items():
+    for key, value in list(note.attributes.__dict__.items()):
         if value and key not in ('reminderOrder', 'reminderTime', 'reminderDoneTime'):
             printLine("%s: %s" % (key, value))
     separator("|", "REMINDERS")
@@ -180,13 +180,13 @@ def showNote(note):
     if note.tagNames:
         printLine("Tags: %s" % ', '.join(note.tagNames))
 
-    from editor import Editor
+    from .editor import Editor
     printLine(Editor.ENMLtoText(note.content))
 
 
 @preloaderStop
 def showNoteRaw(note):
-    from editor import Editor
+    from .editor import Editor
     printLine(Editor.ENMLtoText(note.content, 'pre'))
 
 
@@ -250,7 +250,7 @@ def printList(listItems, title="", showSelector=False,
             printDate(item.created).ljust(18, " ") if hasattr(item, 'created') else '',
             printDate(item.updated).ljust(18, " ") if hasattr(item, 'updated') else '',
             item.title if hasattr(item, 'title') else item.name,
-            "".join( map(lambda s:" #"+s, item.tagGuids) ) if showTags and hasattr(item, 'tagGuids') and item.tagGuids else '',
+            "".join( [" #"+s for s in item.tagGuids] ) if showTags and hasattr(item, 'tagGuids') and item.tagGuids else '',
             " @"+item.notebookGuid if showNotebook and hasattr(item, 'notebookGuid') else '',
             " " + (">>> " + config.NOTE_URL % item.guid) if showUrl else '',))
 
@@ -270,7 +270,7 @@ def printList(listItems, title="", showSelector=False,
                     exit(1)
                 failureMessage('Incorrect number "%s", '
                                'please try again:\n' % num)
-        except (KeyboardInterrupt, SystemExit), e:
+        except (KeyboardInterrupt, SystemExit) as e:
             if e.message:
                 tools.exit(e.message)
             else:
@@ -281,7 +281,7 @@ def rawInput(message, isPass=False):
     if isPass:
         data = getpass.getpass(message)
     else:
-        data = raw_input(message)
+        data = input(message)
     return tools.stdinEncode(data)
 
 

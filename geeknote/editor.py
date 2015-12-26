@@ -8,12 +8,12 @@ import threading
 import hashlib
 import html2text as html2text
 import markdown2 as markdown
-import tools
-import out
+from . import tools
+from . import out
 import re
-import config
-from storage import Storage
-from log import logging
+from . import config
+from .storage import Storage
+from .log import logging
 from xml.sax.saxutils import escape, unescape
 
 
@@ -38,7 +38,7 @@ class Editor(object):
 
     @staticmethod
     def getHtmlUnescapeTable():
-        return dict((v, k) for k, v in Editor.getHtmlEscapeTable().items())
+        return dict((v, k) for k, v in list(Editor.getHtmlEscapeTable().items()))
 
     @staticmethod
     def HTMLEscape(text):
@@ -70,7 +70,7 @@ class Editor(object):
             # EN checklist can appear anywhere, but if they appear at the beggining
             # of a block element, transform it so it ressembles github markdown syntax
             if transform:
-                content = ''.join(unicode(child) for child in parent.children
+                content = ''.join(str(child) for child in parent.children
                                   if isinstance(child, NavigableString)
                                   ).strip()
 
@@ -93,7 +93,7 @@ class Editor(object):
             if len(sections) >= 1:
                 content = ''
                 for c in sections[0].contents:
-                    content = u''.join((content, c))
+                    content = ''.join((content, c))
                 pass
             else:
                 format = 'default'
@@ -136,7 +136,7 @@ class Editor(object):
         content = html2text.html2text(str(soup).decode('utf-8'), '', 0)
 
         content = re.sub(r' *\n', os.linesep, content)
-        content = content.replace(unichr(160), " ")
+        content = content.replace(chr(160), " ")
         content = Editor.HTMLUnescape(content)
 
         return content.encode('utf-8')
@@ -205,7 +205,7 @@ class Editor(object):
         if not isinstance(content, str):
             content = ""
         try:
-            content = unicode(content, "utf-8")
+            content = str(content, "utf-8")
             # add 2 space before new line in paragraph for creating br tags
             # content = re.sub(r'([^\r\n])([\r\n])([^\r\n])', r'\1  \n\3', content)
             content = re.sub(r'\r\n', '\n', content)
@@ -227,7 +227,7 @@ class Editor(object):
                 # For the 'pre' format, simply wrap the content with a 'pre' tag. Do
                 # perform any parsing/mutation.
                 #
-                contentHTML = u''.join(('<pre>', content, '</pre>')).encode("utf-8")
+                contentHTML = ''.join(('<pre>', content, '</pre>')).encode("utf-8")
             elif format == 'html':
                 # Html to ENML http://dev.evernote.com/doc/articles/enml.php
                 ATTR_2_REMOVE = ["id",
@@ -242,10 +242,10 @@ class Editor(object):
 
                 for tag in soup.findAll():
                     if hasattr(tag, 'attrs'):
-                        map(lambda x: tag.attrs.pop(x, None),
-                            [k for k in tag.attrs.keys()
+                        list(map(lambda x: tag.attrs.pop(x, None),
+                            [k for k in list(tag.attrs.keys())
                              if k in ATTR_2_REMOVE
-                             or k.find('on') == 0])
+                             or k.find('on') == 0]))
                 contentHTML = str(soup)
             else:
                 contentHTML = Editor.HTMLEscape(content)
@@ -253,9 +253,9 @@ class Editor(object):
                 tmpstr = ''
                 for l in contentHTML.split('\n'):
                     if l == '':
-                        tmpstr = tmpstr + u'<div><br/></div>'
+                        tmpstr = tmpstr + '<div><br/></div>'
                     else:
-                        tmpstr = tmpstr + u'<div>' + l + u'</div>'
+                        tmpstr = tmpstr + '<div>' + l + '</div>'
 
                 contentHTML = tmpstr.encode("utf-8")
 
