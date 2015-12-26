@@ -5,7 +5,6 @@ import sys
 import os
 import shutil
 import codecs
-import geeknote
 from setuptools import setup
 from setuptools.command.install import install
 
@@ -64,7 +63,7 @@ else:
 
 setup(
     name='geeknote',
-    version=geeknote.__version__,
+    version='0.2a0',
     license='GPL',
     author='Vitaliy Rodnenko',
     author_email='vitaliy@rodnenko.ru',
