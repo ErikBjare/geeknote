@@ -5,7 +5,7 @@ try:
     from http import cookies
 except ImportError:
     import httplib as http
-    import Cookies as cookies
+    import Cookie as cookies
 
 
 import time
