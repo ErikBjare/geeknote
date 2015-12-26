@@ -62,7 +62,7 @@ else:
 
 
 version = None
-with open("./geeknote/__init__.py") as f:
+with open(os.path.dirname(os.path.realpath(__file__)) + "/geeknote/__init__.py") as f:
     for line in f.readlines():
         if "__version__" in line:
             version = line.split("'")[1].split("'")[0]
