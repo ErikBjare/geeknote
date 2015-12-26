@@ -2,8 +2,11 @@
 
 try:
     import http
+    from http import cookies
 except ImportError:
     import httplib as http
+    import Cookies as cookies
+
 
 import time
 import uuid
@@ -111,7 +114,7 @@ class GeekNoteAuth(object):
         conn = http.client.HTTPSConnection(url)
         conn.request(method, uri, params, headers)
         response = conn.getresponse()
-        data = response.read()
+        data = str(response.read(), 'utf-8')
         conn.close()
 
         logging.debug("Response : %s > %s",
@@ -122,7 +125,7 @@ class GeekNoteAuth(object):
                               data=data)
 
         # update local cookies
-        sk = http.cookies.SimpleCookie(response.getheader("Set-Cookie", ""))
+        sk = cookies.SimpleCookie(response.getheader("Set-Cookie", ""))
         for key in sk:
             self.cookies[key] = sk[key].value
         # delete cookies whose content is "deleteme"
