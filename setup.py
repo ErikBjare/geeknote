@@ -45,6 +45,22 @@ class full_install(install):
         copy_autocomplete('completion/bash_completion/_geeknote',self.bash_completion_dir)
         copy_autocomplete('completion/zsh_completion/_geeknote',self.zsh_completion_dir)
 
+install_requires = [
+    'html2text',
+    'sqlalchemy',
+    'markdown2',
+    'beautifulsoup4',
+    'thrift'
+]
+
+dependency_links = []
+
+if(sys.version_info >=(3, 0)):
+    install_requires.append('evernote>=1.25.1')
+    dependency_links.append("https://github.com/ErikBjare/evernote-sdk-python3/tarball/master#egg=evernote-1.25.1")
+else:
+    install_requires.append('evernote>=1.25')
+
 
 setup(
     name='geeknote',
@@ -69,14 +85,8 @@ setup(
         'Topic :: Utilities',
     ],
 
-    install_requires=[
-        'evernote>=1.25',
-        'html2text',
-        'sqlalchemy',
-        'markdown2',
-        'beautifulsoup4',
-        'thrift'
-    ],
+    install_requires=install_requires,
+    dependency_links=dependency_links,
 
     entry_points={
         'console_scripts': [
