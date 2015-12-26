@@ -12,5 +12,4 @@ from . import log
 
 from . import geeknote
 
-from .geeknote import main
-
+from .geeknote import main as __main__

@@ -3,6 +3,8 @@
 import os
 import sys
 
+from . import __version__
+
 ALWAYS_USE_YINXIANG = False  # for 印象笔记, set to True
 
 # !!! DO NOT EDIT !!! >>>
@@ -27,7 +29,7 @@ NOTE_SORT_ORDER = "UPDATED"
 
 # Evernote config
 
-VERSION = 0.1
+VERSION = __version__
 
 try:
     IS_IN_TERMINAL = sys.stdin.isatty()

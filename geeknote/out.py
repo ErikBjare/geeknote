@@ -2,7 +2,11 @@
 
 import getpass
 import threading
-import _thread
+try:
+    import _thread
+except ImportError:
+    # Not using Python 3 or newer
+    import thread
 import time
 import datetime
 import sys
@@ -159,7 +163,7 @@ def confirm(message):
         if e.message:
             tools.exit(e.message)
         else:
-            tools.exit
+            tools.exit()
 
 
 @preloaderStop

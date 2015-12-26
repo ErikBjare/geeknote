@@ -1220,15 +1220,16 @@ def main(args=None):
             Tags().remove(**ARGS)
 
     except (KeyboardInterrupt, SystemExit, tools.ExitException) as e:
-        if e.message:
+        if hasattr(e, "message"):
             exit_status_code = e.message
 
     except Exception as e:
         traceback.print_exc()
         logging.error("App error: %s", str(e))
 
-    # exit preloader
-    tools.exit('exit', exit_status_code)
+    #exit preloader
+    # FIXME: Whatever this used to do
+    #tools.exit('exit', exit_status_code)
 
 if __name__ == "__main__":
     main()

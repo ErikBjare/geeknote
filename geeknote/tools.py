@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from . import out
 import sys
 import time
 
@@ -58,7 +57,8 @@ class ExitException(Exception):
 
 
 def _exit(message, code):
-    out.preloader.exit(code)
+    # FIXME: Whatever the following line used to do
+    #out.preloader.exit(code)
     time.sleep(0.33)
     raise ExitException(message)
 

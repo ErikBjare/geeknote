@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import http.client
+try:
+    import http
+except ImportError:
+    import httplib as http
+
 import time
-import http.cookies
 import uuid
 import re
-from urllib.parse import urlencode, unquote
-from urllib.parse import urlparse
+
+try:
+    from urllib.parse import urlencode, unquote
+    from urllib.parse import urlparse
+except ImportError:
+    from urllib import urlencode, unquote
+    import urlparse
 
 from . import out
 from . import tools
